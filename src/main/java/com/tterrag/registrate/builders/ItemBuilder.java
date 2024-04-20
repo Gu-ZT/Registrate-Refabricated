@@ -19,7 +19,6 @@ import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -76,7 +75,7 @@ public class ItemBuilder<T extends Item, P> extends AbstractBuilder<Item, T, P, 
 
     @Nullable
     private NonNullSupplier<Supplier<ItemColor>> colorHandler;
-    private Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTabModifier>> creativeModeTabs = Maps.newLinkedHashMap();
+    private final Map<ResourceKey<CreativeModeTab>, Consumer<CreativeModeTabModifier>> creativeModeTabs = Maps.newLinkedHashMap();
 
     protected ItemBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, NonNullFunction<Item.Properties, T> factory) {
         super(owner, parent, name, callback, Registries.ITEM);

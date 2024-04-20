@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -100,9 +99,8 @@ public class FluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBuil
      */
     public static <T extends SimpleFlowableFluid, P> FluidBuilder<T, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceLocation stillTexture, ResourceLocation flowingTexture,
         NonNullFunction<SimpleFlowableFluid.Properties, T> fluidFactory) {
-        FluidBuilder<T, P> ret = new FluidBuilder<>(owner, parent, name, callback, stillTexture, flowingTexture, fluidFactory)
+        return new FluidBuilder<>(owner, parent, name, callback, stillTexture, flowingTexture, fluidFactory)
             .defaultLang().defaultSource().defaultBlock().defaultBucket();
-        return ret;
     }
 
     private final String sourceName, bucketName;
@@ -386,7 +384,7 @@ public class FluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBuil
 
     private SimpleFlowableFluid.Properties makeProperties() {
         NonNullSupplier<? extends SimpleFlowableFluid> source = this.source;
-        SimpleFlowableFluid.Properties ret = new SimpleFlowableFluid.Properties(source == null ? null : source::get, asSupplier());
+        SimpleFlowableFluid.Properties ret = new SimpleFlowableFluid.Properties(source, asSupplier());
         fluidProperties.accept(ret);
         return ret;
     }
@@ -433,7 +431,7 @@ public class FluidBuilder<T extends SimpleFlowableFluid, P> extends AbstractBuil
 
         NonNullSupplier<? extends SimpleFlowableFluid> source = this.source;
         if (source != null) {
-            getCallback().accept(sourceName, Registries.FLUID, (FluidBuilder) this, source::get);
+            getCallback().accept(sourceName, Registries.FLUID, (FluidBuilder) this, source);
         } else {
             throw new IllegalStateException("Fluid must have a source version: " + getName());
         }

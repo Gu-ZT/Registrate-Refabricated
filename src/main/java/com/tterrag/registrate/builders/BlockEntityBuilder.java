@@ -15,7 +15,6 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import net.fabricmc.api.EnvType;
-import net.minecraft.core.Registry;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -39,7 +38,7 @@ public class BlockEntityBuilder<T extends BlockEntity, P> extends AbstractBuilde
 
     public interface BlockEntityFactory<T extends BlockEntity> {
 
-        public T create(BlockEntityType<T> type, BlockPos pos, BlockState state);
+        T create(BlockEntityType<T> type, BlockPos pos, BlockState state);
 
     }
 
@@ -129,7 +128,7 @@ public class BlockEntityBuilder<T extends BlockEntity, P> extends AbstractBuilde
     protected BlockEntityType<T> createEntry() {
         BlockEntityFactory<T> factory = this.factory;
         Supplier<BlockEntityType<T>> supplier = asSupplier();
-        return BlockEntityType.Builder.<T>of((pos, state) -> factory.create((BlockEntityType<T>) supplier.get(), pos, state), validBlocks.stream().map(NonNullSupplier::get).toArray(Block[]::new))
+        return BlockEntityType.Builder.<T>of((pos, state) -> factory.create(supplier.get(), pos, state), validBlocks.stream().map(NonNullSupplier::get).toArray(Block[]::new))
                 .build(null);
     }
     

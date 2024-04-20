@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 @EqualsAndHashCode(of = "delegate")
 public class RegistryEntry<T> implements NonNullSupplier<T> {
 
-    private static RegistryEntry<?> EMPTY = new RegistryEntry(null, RegistryObject.empty());
+    private static final RegistryEntry<?> EMPTY = new RegistryEntry<>(null, RegistryObject.empty());
 
     public static <T> RegistryEntry<T> empty() {
         @SuppressWarnings("unchecked")
@@ -37,7 +37,7 @@ public class RegistryEntry<T> implements NonNullSupplier<T> {
 
         RegistryObject<T> filter(Predicate<? super T> predicate);
         
-        public void updateReference(Registry<? extends T> registry);
+        void updateReference(Registry<? extends T> registry);
     }
 
     private final AbstractRegistrate<?> owner;
@@ -46,9 +46,9 @@ public class RegistryEntry<T> implements NonNullSupplier<T> {
 
     @SuppressWarnings("unused")
     public RegistryEntry(AbstractRegistrate<?> owner, RegistryObject<T> delegate) {
-        if (EMPTY != null && owner == null)
+        if (owner == null)
             throw new NullPointerException("Owner must not be null");
-        if (EMPTY != null && delegate == null)
+        if (delegate == null)
             throw new NullPointerException("Delegate must not be null");
         this.owner = owner;
         this.delegate = delegate;

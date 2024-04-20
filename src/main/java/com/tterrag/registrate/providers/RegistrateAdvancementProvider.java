@@ -55,7 +55,7 @@ public class RegistrateAdvancementProvider implements RegistrateProvider, Consum
     }
 
     private @Nullable CachedOutput cache;
-    private Set<ResourceLocation> seenAdvancements = new HashSet<>();
+    private final Set<ResourceLocation> seenAdvancements = new HashSet<>();
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {

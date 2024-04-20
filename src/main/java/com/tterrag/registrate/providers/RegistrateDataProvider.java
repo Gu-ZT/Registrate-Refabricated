@@ -22,7 +22,6 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +39,7 @@ public class RegistrateDataProvider implements DataProvider {
     private final Map<ProviderType<?>, RegistrateProvider> subProviders = new LinkedHashMap<>();
     private final CompletableFuture<Provider> registriesLookup;
 
-    record DataInfo(FabricDataOutput output, ExistingFileHelper helper, CompletableFuture<Provider> registriesLookup) {}
+    public record DataInfo(FabricDataOutput output, ExistingFileHelper helper, CompletableFuture<Provider> registriesLookup) {}
 
     public RegistrateDataProvider(AbstractRegistrate<?> parent, String modid, ExistingFileHelper helper, FabricDataOutput output, CompletableFuture<Provider> registriesLookup) {
         this.mod = modid;

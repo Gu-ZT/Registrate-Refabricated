@@ -37,10 +37,8 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.core.DefaultedMappedRegistry;
-import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -155,7 +153,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
     private final NonNullSupplier<Boolean> doDatagen = NonNullSupplier.lazy(() -> System.getProperty("fabric-api.datagen") != null);
 
     /**
-     * @return The mod ID that this {@link AbstractRegistrate} is creating objects for
+     * The mod ID that this {@link AbstractRegistrate} is creating objects for
      */
     @Getter
     private final String modid;
@@ -210,7 +208,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
             }
         }
         Map<String, Registration<?, ?>> registrationsForType = registrations.row(type);
-        if (registrationsForType.size() > 0) {
+        if (!registrationsForType.isEmpty()) {
             log.debug(DebugMarkers.REGISTER, "Registering {} known objects of type {}", registrationsForType.size(), type.location());
             for (Entry<String, Registration<?, ?>> e : registrationsForType.entrySet()) {
                 try {
@@ -295,7 +293,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
      *             if current name has not been set via {@link #object(String)}
      */
     public <R, T extends R> RegistryEntry<T> get(ResourceKey<? extends Registry<R>> type) {
-        return this.<R, T>get(currentName(), type);
+        return this.get(currentName(), type);
     }
 
     /**
@@ -344,7 +342,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
      * @return A {@link RegistryEntry} which will supply the requested entry, if it exists, otherwise the {@link RegistryEntry#empty() empty entry}
      */
     public <R, T extends R> RegistryEntry<T> getOptional(String name, ResourceKey<? extends Registry<R>> type) {
-        Registration<R, T> reg = this.<R, T>getRegistrationUnchecked(name, type);
+        Registration<R, T> reg = this.getRegistrationUnchecked(name, type);
         return reg == null ? RegistryEntry.empty() : reg.getDelegate();
     }
 
@@ -355,7 +353,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
     }
 
     private <R, T extends R> Registration<R, T> getRegistration(String name, ResourceKey<? extends Registry<R>> type) {
-        Registration<R, T> reg = this.<R, T>getRegistrationUnchecked(name, type);
+        Registration<R, T> reg = this.getRegistrationUnchecked(name, type);
         if (reg != null) {
             return reg;
         }
@@ -394,9 +392,9 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
      * @return This {@link AbstractRegistrate} instance
      */
     public <R, T extends R> S addRegisterCallback(String name, ResourceKey<? extends Registry<R>> registryType, NonNullConsumer<? super T> callback) {
-        Registration<R, T> reg = this.<R, T>getRegistrationUnchecked(name, registryType);
+        Registration<R, T> reg = this.getRegistrationUnchecked(name, registryType);
         if (reg == null) {
-            registerCallbacks.put(Pair.of(name, registryType), (NonNullConsumer<?>) callback);
+            registerCallbacks.put(Pair.of(name, registryType), callback);
         } else {
             reg.addRegisterCallback(callback);
         }
@@ -415,7 +413,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
      * @return This {@link AbstractRegistrate} instance
      */
     public <R> S addRegisterCallback(ResourceKey<? extends Registry<R>> registryType, Runnable callback) {
-        afterRegisterCallbacks.put((ResourceKey<? extends Registry<?>>) registryType, callback);
+        afterRegisterCallbacks.put(registryType, callback);
         return self();
     }
 
@@ -467,7 +465,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
      * @return this {@link AbstractRegistrate}
      */
     public <P extends RegistrateProvider, R> S setDataGenerator(Builder<R, ?, ?, ?> builder, ProviderType<? extends P> type, NonNullConsumer<? extends P> cons) {
-        return this.<P, R>setDataGenerator(builder.getName(), builder.getRegistryKey(), type, cons);
+        return this.setDataGenerator(builder.getName(), builder.getRegistryKey(), type, cons);
     }
 
     /**
@@ -595,7 +593,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
     public <T extends RegistrateProvider> void genData(ProviderType<? extends T> type, T gen) {
         if (!doDatagen.get()) return;
         datagens.get(type).forEach(cons -> {
-            Optional<Pair<String, ResourceKey<? extends Registry<?>>>> entry = null;
+            Optional<Pair<String, ResourceKey<? extends Registry<?>>>> entry = Optional.empty();
             if (log.isEnabled(Level.DEBUG, DebugMarkers.DATA)) {
                 entry = getEntryForGenerator(type, cons);
                 if (entry.isPresent()) {
@@ -607,7 +605,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
             try {
                 ((Consumer<T>) cons).accept(gen);
             } catch (Exception e) {
-                if (entry == null) {
+                if (entry.isEmpty()) {
                     entry = getEntryForGenerator(type, cons);
                 }
                 Message err;
@@ -890,7 +888,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
     }
 
     public <R, T extends R, P> NoConfigBuilder<R, T, P> generic(P parent, String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
-        return entry(name, callback -> new NoConfigBuilder<R, T, P>(this, parent, name, callback, registryType, factory));
+        return entry(name, callback -> new NoConfigBuilder<>(this, parent, name, callback, registryType, factory));
     }
 
     // Items
@@ -1035,7 +1033,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
     }
 
     public <T extends AbstractContainerMenu, SC extends Screen & MenuAccess<T>, P> MenuBuilder<T, SC, P> menu(P parent, String name, MenuFactory<T> factory, NonNullSupplier<ScreenFactory<T, SC>> screenFactory) {
-        return entry(name, callback -> new MenuBuilder<T, SC, P>(this, parent, name, callback, factory, screenFactory));
+        return entry(name, callback -> new MenuBuilder<>(this, parent, name, callback, factory, screenFactory));
     }
 
     public <T extends AbstractContainerMenu, SC extends Screen & MenuAccess<T>> MenuBuilder<T, SC, S> menu(ForgeMenuFactory<T> factory, NonNullSupplier<ScreenFactory<T, SC>> screenFactory) {
@@ -1051,7 +1049,7 @@ public abstract class AbstractRegistrate<S extends AbstractRegistrate<S>> {
     }
 
     public <T extends AbstractContainerMenu, SC extends Screen & MenuAccess<T>, P> MenuBuilder<T, SC, P> menu(P parent, String name, ForgeMenuFactory<T> factory, NonNullSupplier<ScreenFactory<T, SC>> screenFactory) {
-        return entry(name, callback -> new MenuBuilder<T, SC, P>(this, parent, name, callback, factory, screenFactory));
+        return entry(name, callback -> new MenuBuilder<>(this, parent, name, callback, factory, screenFactory));
     }
 
     // Enchantment

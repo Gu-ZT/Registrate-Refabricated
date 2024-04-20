@@ -9,6 +9,7 @@ import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.fabric.SimpleFlowableFluid.Properties;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateRecipeProvider;
 import com.tterrag.registrate.util.DataIngredient;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -79,6 +80,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -212,17 +214,17 @@ public class TestMod implements ModInitializer, DataGeneratorEntrypoint {
 
     private static final BlockEntry<TestBlock> testblock = registrate.object("testblock")
             .block(TestBlock::new)
-                .properties(p -> p.noOcclusion())
+                .properties(BlockBehaviour.Properties::noOcclusion)
                 .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(),
                                 prov.models().withExistingParent(ctx.getName(), new ResourceLocation("block/glass"))))
-            .addLayer(() -> () -> RenderType.cutout())
+            .addLayer(() -> RenderType::cutout)
                 .transform(TestMod::applyDiamondDrop)
                 .recipe((ctx, prov) -> {
                     ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ctx.getEntry())
                             .pattern("DDD").pattern("DED").pattern("DDD")
                             .define('D', Items.DIAMOND)
                             .define('E', Items.EGG)
-                            .unlockedBy("has_egg", prov.has(Items.EGG))
+                            .unlockedBy("has_egg", RegistrateRecipeProvider.has(Items.EGG))
                             .save(prov);
 
                     prov.food(DataIngredient.items(ctx), RecipeCategory.MISC, () -> Blocks.DIAMOND_BLOCK, 1f);

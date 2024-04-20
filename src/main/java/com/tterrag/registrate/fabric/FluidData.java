@@ -14,10 +14,7 @@ public record FluidData(String translationKey, int light) {
     }
 
     public static RenderHandlerFactory createDefaultHandler() {
-        return (stillTexture, flowingTexture) -> {
-            final SimpleFluidRenderHandler handler = new SimpleFluidRenderHandler(stillTexture, flowingTexture, flowingTexture, -1);
-            return handler;
-        };
+        return (stillTexture, flowingTexture) -> new SimpleFluidRenderHandler(stillTexture, flowingTexture, flowingTexture, -1);
     }
 
     public static  <T extends SimpleFlowableFluid> void registerRenderHandler(NonNullSupplier<RenderHandlerFactory> renderHandler, T entry, ResourceLocation stillTexture, ResourceLocation flowingTexture) {

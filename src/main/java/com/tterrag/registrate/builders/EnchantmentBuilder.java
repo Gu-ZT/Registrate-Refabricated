@@ -8,7 +8,6 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import com.tterrag.registrate.util.nullness.NonnullType;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -65,7 +64,7 @@ public class EnchantmentBuilder<T extends Enchantment, P> extends AbstractBuilde
     private Enchantment.Rarity rarity = Enchantment.Rarity.COMMON;
     private final EnchantmentCategory type;
     @SuppressWarnings("null")
-    private EnumSet<EquipmentSlot> slots = EnumSet.noneOf(EquipmentSlot.class);
+    private final EnumSet<EquipmentSlot> slots = EnumSet.noneOf(EquipmentSlot.class);
 
     private final EnchantmentFactory<T> factory;
 

@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 
 import com.tterrag.registrate.AbstractRegistrate;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.SimpleFabricLootTableProvider;
 import org.jetbrains.annotations.NotNull;

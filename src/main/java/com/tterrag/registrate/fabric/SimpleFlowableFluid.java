@@ -57,7 +57,7 @@ public abstract class SimpleFlowableFluid extends FlowingFluid {
 	@Override
 	public Optional<SoundEvent> getPickupSound() {
 		boolean lava = defaultFluidState().is(FluidTags.LAVA);
-		return Optional.ofNullable(lava ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL);
+		return Optional.of(lava ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL);
 	}
 
 	@Override
@@ -164,8 +164,8 @@ public abstract class SimpleFlowableFluid extends FlowingFluid {
 	}
 
 	public static class Properties {
-		private Supplier<? extends Fluid> still;
-		private Supplier<? extends Fluid> flowing;
+		private final Supplier<? extends Fluid> still;
+		private final Supplier<? extends Fluid> flowing;
 		private boolean infinite;
 		private Supplier<? extends Item> bucket;
 		private Supplier<? extends LiquidBlock> block;

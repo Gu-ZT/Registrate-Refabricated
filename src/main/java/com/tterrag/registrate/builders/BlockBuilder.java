@@ -17,9 +17,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -71,7 +69,7 @@ public class BlockBuilder<T extends Block, P> extends AbstractBuilder<Block, T, 
      * @return A new {@link BlockBuilder} with reasonable default data generators.
      */
     public static <T extends Block, P> BlockBuilder<T, P> create(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, NonNullFunction<BlockBehaviour.Properties, T> factory) {
-        return new BlockBuilder<>(owner, parent, name, callback, factory, () -> BlockBehaviour.Properties.of())
+        return new BlockBuilder<>(owner, parent, name, callback, factory, BlockBehaviour.Properties::of)
                 .defaultBlockstate().defaultLoot().defaultLang();
     }
 
@@ -226,9 +224,7 @@ public class BlockBuilder<T extends Block, P> extends AbstractBuilder<Block, T, 
     }
     
     protected void registerBlockColor() {
-        onRegister(entry -> {
-            ColorProviderRegistry.BLOCK.register(colorHandler.get().get(), entry);
-        });
+        onRegister(entry -> ColorProviderRegistry.BLOCK.register(colorHandler.get().get(), entry));
     }
 
     /**

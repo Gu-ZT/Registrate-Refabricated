@@ -6,20 +6,16 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.tterrag.registrate.fabric.BaseLangProvider;
-import io.github.fabricators_of_create.porting_lib.data.LanguageProvider;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.api.EnvType;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.PackOutput;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider.TranslationBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import com.tterrag.registrate.AbstractRegistrate;
@@ -69,7 +65,7 @@ public class RegistrateLangProvider extends BaseLangProvider implements Registra
         super.generateTranslations(translationBuilder);
     }
 
-    public static final String toEnglishName(String internalName) {
+    public static String toEnglishName(String internalName) {
         return Arrays.stream(internalName.toLowerCase(Locale.ROOT).split("_"))
                 .map(StringUtils::capitalize)
                 .collect(Collectors.joining(" "));
@@ -150,9 +146,9 @@ public class RegistrateLangProvider extends BaseLangProvider implements Registra
         for (int i = 0; i < normal.length(); i++) {
             char c = normal.charAt(i);
             if (c == '%') {
-                String fmtArg = "";
+                StringBuilder fmtArg = new StringBuilder();
                 while (Character.isDigit(c) || c == '%' || c == '$' || c == 's' || c == 'd') { // TODO this is a bit lazy
-                    fmtArg += c;
+                    fmtArg.append(c);
                     i++;
                     c = i == normal.length() ? 0 : normal.charAt(i);
                 }

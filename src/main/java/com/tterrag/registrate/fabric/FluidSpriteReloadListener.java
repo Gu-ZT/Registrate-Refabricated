@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;

@@ -10,14 +10,10 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.data.CachedOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
-import net.minecraft.data.loot.packs.VanillaLootTableProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.ValidationContext;
@@ -25,7 +21,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -34,14 +29,14 @@ public class RegistrateLootTableProvider extends LootTableProvider implements Re
 
     public interface LootType<T extends RegistrateLootTables> {
 
-        static LootType<RegistrateBlockLootTables> BLOCK = register("block", LootContextParamSets.BLOCK, RegistrateBlockLootTables::new);
-        static LootType<RegistrateEntityLootTables> ENTITY = register("entity", LootContextParamSets.ENTITY, RegistrateEntityLootTables::new);
+        LootType<RegistrateBlockLootTables> BLOCK = register("block", LootContextParamSets.BLOCK, RegistrateBlockLootTables::new);
+        LootType<RegistrateEntityLootTables> ENTITY = register("entity", LootContextParamSets.ENTITY, RegistrateEntityLootTables::new);
 
         T getLootCreator(AbstractRegistrate<?> parent, Consumer<T> callback, FabricDataOutput output);
         LootContextParamSet getLootSet();
 
-        static <T extends RegistrateLootTables> LootType<T> register(String name, LootContextParamSet set, NonNullTriFunction<AbstractRegistrate, Consumer<T>, FabricDataOutput, T> factory) {
-            LootType<T> type = new LootType<T>() {
+        static <T extends RegistrateLootTables> LootType<T> register(String name, LootContextParamSet set, NonNullTriFunction<AbstractRegistrate<?>, Consumer<T>, FabricDataOutput, T> factory) {
+            LootType<T> type = new LootType<>() {
                 @Override
                 public T getLootCreator(AbstractRegistrate<?> parent, Consumer<T> callback, FabricDataOutput output) {
                     return factory.apply(parent, callback, output);

@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.fabric.RegistryObject;
-import com.tterrag.registrate.fabric.RegistryUtil;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateProvider;

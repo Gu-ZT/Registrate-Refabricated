@@ -1,5 +1,6 @@
 package com.tterrag.registrate.fabric;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
@@ -15,9 +16,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 
 public class RegistryObject<T> implements Supplier<T> {
-	private static RegistryObject<?> EMPTY = new RegistryObject<>();
+	private static final RegistryObject<?> EMPTY = new RegistryObject<>();
 
-	private final ResourceLocation id;
+	@Getter
+    private final ResourceLocation id;
 	@Nullable
 	private T object;
 
@@ -53,11 +55,7 @@ public class RegistryObject<T> implements Supplier<T> {
 		return object;
 	}
 
-	public ResourceLocation getId() {
-		return id;
-	}
-
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
 	public void updateReference(Registry<? super T> registry) {
 		object = (T) registry.get(getId());
 	}
