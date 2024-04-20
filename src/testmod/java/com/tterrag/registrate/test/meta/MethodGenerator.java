@@ -22,18 +22,18 @@ import lombok.Value;
 
 @RequiredArgsConstructor
 public class MethodGenerator {
-    
+
     @Value
-    private class Exclusion {
+    private static class Exclusion {
 
         String name;
         String[] params;
-        
+
         public boolean matches(Header header) {
             if (!header.getName().equals(this.name)) {
                 return false;
             }
-            return this.params == null ? true : Arrays.equals(header.getParamTypes(), this.params);
+            return this.params == null || Arrays.equals(header.getParamTypes(), this.params);
         }
     }
     
