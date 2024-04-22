@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 @EqualsAndHashCode(of = "delegate")
 public class RegistryEntry<T> implements NonNullSupplier<T> {
 
-    private static final RegistryEntry<?> EMPTY = new RegistryEntry<>(null, RegistryObject.empty());
+    private static final RegistryEntry<?> EMPTY = new RegistryEntry<>();
 
     public static <T> RegistryEntry<T> empty() {
         @SuppressWarnings("unchecked")
@@ -52,6 +52,11 @@ public class RegistryEntry<T> implements NonNullSupplier<T> {
             throw new NullPointerException("Delegate must not be null");
         this.owner = owner;
         this.delegate = delegate;
+    }
+
+    private RegistryEntry() {
+        this.owner = null;
+        this.delegate = RegistryObject.empty();
     }
 
     /**
